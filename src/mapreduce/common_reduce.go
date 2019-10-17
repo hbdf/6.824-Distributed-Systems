@@ -35,7 +35,6 @@ func doReduce(
 		}
 		file.Close()
 	}
-	fmt.Println("Size of data from map", len(allData))
 
 	sort.Slice(allData, func(i, j int) bool {
 		return allData[i].Key < allData[j].Key

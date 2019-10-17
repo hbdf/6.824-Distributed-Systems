@@ -39,7 +39,6 @@ func doMap(
 		enc.Encode(&mappedData[i])
 		file.Close()
 	}
-	fmt.Println("end map")
 	//
 	// doMap manages one map task: it should read one of the input files
 	// (inFile), call the user-defined map function (mapF) for that file's
