@@ -49,8 +49,8 @@ func (mr *Master) Register(args *RegisterArgs, _ *struct{}) error {
 func newMaster(master string) (mr *Master) {
 	mr = new(Master)
 	mr.address = master
-	mr.shutdown = make(chan struct{})
-	mr.newCond = sync.NewCond(mr)
+	mr.shutdown = make(chan struct{}) //Create a channel
+	mr.newCond = sync.NewCond(mr)     // Condition Variable
 	mr.doneChannel = make(chan bool)
 	return
 }

@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"mapreduce"
 	"os"
+	"sort"
+	"strconv"
+	"strings"
+	"unicode"
 )
 
 //
@@ -15,6 +19,23 @@ import (
 //
 func mapF(filename string, contents string) []mapreduce.KeyValue {
 	// Your code here (Part II).
+	var ans []mapreduce.KeyValue
+	f := func(c rune) bool {
+		return !unicode.IsLetter(c) && !unicode.IsNumber(c)
+	}
+	words := strings.FieldsFunc(contents, f)
+
+	sort.Strings(words)
+
+	for i := 0; i < len(words); {
+		j := i
+		for j < len(words) && words[j] == words[i] {
+			j++
+		}
+		ans = append(ans, mapreduce.KeyValue{words[i], strconv.Itoa(j - i)})
+		i = j
+	}
+	return ans
 }
 
 //
@@ -24,6 +45,16 @@ func mapF(filename string, contents string) []mapreduce.KeyValue {
 //
 func reduceF(key string, values []string) string {
 	// Your code here (Part II).
+	var ans int = 0
+	for i := 0; i < len(values); i++ {
+		val, err := strconv.Atoi(values[i])
+		if err != nil {
+			fmt.Printf("Fail\n")
+			return "fail"
+		}
+		ans += val
+	}
+	return strconv.Itoa(ans)
 }
 
 // Can be run in 3 ways:
@@ -38,7 +69,7 @@ func main() {
 		if os.Args[2] == "sequential" {
 			mr = mapreduce.Sequential("wcseq", os.Args[3:], 3, mapF, reduceF)
 		} else {
-			mr = mapreduce.Distributed("wcseq", os.Args[3:], 3, os.Args[2])
+			mr = mapreduce.Distributed("wcdis", os.Args[3:], 3, os.Args[2])
 		}
 		mr.Wait()
 	} else {
